@@ -1,9 +1,11 @@
 import prisma from '../../prisma/client.js';
 
 class AnotacaoModel {
-  create = async (conteudo) => {
+
+  create = async (titulo, conteudo) => {
     return await prisma.nota.create({ 
       data: {
+        titulo,
         conteudo
       }
     })
@@ -18,19 +20,22 @@ class AnotacaoModel {
       const anotacao = await prisma.nota.findUnique({
         where: { id }
       })
+
+      return anotacao;
     } catch (error) {
       console.log("Error", error)
       throw error;
     }
   }
 
-  update = async (id, concluida, descricao) => {
+  update = async (id, conteudo, favorita) => {
     try {
-      const tarefa = await prisma.task.update({
+      const anotacao = await prisma.nota.update({
         where: { id },
-        data: { concluida: concluida !== undefined ? concluida : true, descricao },
+        data: { favorita: favorita !== undefined ? favorita : true, 
+          conteudo },
       })
-      return tarefa;
+      return anotacao;
     } catch (error) {
       console.log("Error", error)
       throw error;
@@ -39,14 +44,27 @@ class AnotacaoModel {
 
   delete = async (id) => {    
     try {
-      const tarefaDeletada = await prisma.task.delete({
+      const anotacaoDeletada = await prisma.nota.delete({
         where: { id },
       });
 
-      return tarefaDeletada;
+      return anotacaoDeletada;
 
     } catch (error) {
-      console.log("Erro ao deletar tarefa", error);
+      console.log("Erro ao deletar anotacao", error);
+      throw error;
+    }
+  };
+
+  favorite = async (id, favorita) => {
+    try {
+      const anotacao = await prisma.nota.update({
+        where: { id },
+        data: { favorita },
+      });
+      return anotacao;
+    } catch (error) {
+      console.log("Erro ao marcar como favorita", error);
       throw error;
     }
   };
