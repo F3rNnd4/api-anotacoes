@@ -3,12 +3,14 @@ import anotacaoModel from "../models/anotacaoModel.js";
 class AnotacaoController {
   create = async (req, res) => { 
     const { titulo, conteudo } = req.body; 
+
     try {
       if (!titulo || !conteudo) {
         return res.status(400).json({ erro: "Título e Conteúdo são obrigatórios" });
       }
       const novaAnotacao = await anotacaoModel.create(titulo, conteudo);
       res.status(201).json(novaAnotacao);
+
     } catch (error) {
       console.log(error);
       res.status(500).json({ erro: "Erro ao criar anotação" });
@@ -20,6 +22,7 @@ class AnotacaoController {
     try {
       const anotacoes = await anotacaoModel.getAll();
       res.json(anotacoes);
+
     } catch (error) {
       console.log(error);
       res.satus(500).json({ erro: "Erro ao buscar anotação" })
@@ -53,7 +56,6 @@ class AnotacaoController {
       if (!anotacaoAtualizada) {
         return res.status(404).json({ erro: "Anotação não encontrada!" });
       }
-
       res.json(anotacaoAtualizada);
 
     } catch (error) {
@@ -71,8 +73,8 @@ class AnotacaoController {
       if (!sucesso) {
         return res.status(404).json({ erro: "Anotação não encontrada" });
       }
-
       res.status(200).send({ message: "Anotação deletada com sucesso" });
+
     } catch (error) {
       console.log(error);
       res.status(500).json({ erro: "Erro ao deletar anotação" });
@@ -89,8 +91,8 @@ class AnotacaoController {
       if (!anotacaoFavoritada) {
         return res.status(404).json({ erro: "Anotação não encontrada!" });
       }
-  
       res.json(anotacaoFavoritada);
+
     } catch (error) {
       console.error(error);
       res.status(500).json({ erro: "Erro ao marcar anotação como favorita!" });
