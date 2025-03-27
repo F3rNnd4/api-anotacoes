@@ -1,17 +1,28 @@
 import prisma from '../../prisma/client.js';
 
-class TarefaModel {
-  getAll = async () => {
-    return await prisma.task.findMany();
-  };
-
-  create = async (descricao) => {
-    return await prisma.task.create({
+class AnotacaoModel {
+  create = async (conteudo) => {
+    return await prisma.nota.create({ 
       data: {
-        descricao
+        conteudo
       }
     })
   };
+
+  getAll = async () => {
+    return await prisma.nota.findMany();
+  };
+
+  getById = async (id) => {
+    try {
+      const anotacao = await prisma.nota.findUnique({
+        where: { id }
+      })
+    } catch (error) {
+      console.log("Error", error)
+      throw error;
+    }
+  }
 
   update = async (id, concluida, descricao) => {
     try {
@@ -41,4 +52,4 @@ class TarefaModel {
   };
 }
 
-export default new TarefaModel();
+export default new AnotacaoModel();

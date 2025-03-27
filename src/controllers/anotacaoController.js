@@ -1,29 +1,47 @@
-import tarefaModel from "../models/tarefaModel.js";
+import anotacaoModel from "../models/anotacaoModel.js";
 
-class TarefaController {
+class AnotacaoController {
+  create = async (req, res) => { 
+    const { conteudo } = req.body; 
+    try {
+      if (!conteudo) {
+        return res.status(400).json({ erro: "Conteúdo é obrigatória" });
+      }
+      const novaAnotacao = await anotacaoModel.create(conteudo);
+      res.status(201).json(novaAnotacao);
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ erro: "Erro ao criar anotação" });
+    }
+  };
+
+
   getAll = async (req, res) => {
     try {
-      const tarefas = await tarefaModel.getAll();
-      res.json(tarefas);
+      const anotacoes = await anotacaoModel.getAll();
+      res.json(anotacoes);
     } catch (error) {
       console.log(error);
-      res.satus(500).json({ erro: "Erro ao buscar tarefa" })
+      res.satus(500).json({ erro: "Erro ao buscar anotação" })
     }
   };
 
-  create = async (req, res) => {
-    const { descricao } = req.body;
+  getById = async (req, res) => {
+    const { id } = req.params;
+
     try {
-      if (!descricao) {
-        return res.status(400).json({ erro: "Descrição é obrigatória" });
+      const anotacao = await anotacaoModel.getById(Number(id));
+
+      if (!anotacao) {
+        return res.status(404).json({ erro: "Anotação não encontrada!" });
       }
-      const novaTarefa = await tarefaModel.create(descricao);
-      res.status(201).json(novaTarefa);
+      res.json(anotacao);
+
     } catch (error) {
-      console.log(error);
-      res.status(500).json({ erro: "Erro ao criar tarefa" });
+      console.error(error);
+      res.status(500).json({ erro: "Erro ao buscar anotação!"});
     }
-  };
+  }
 
   update = async (req, res) => {
     const { id } = req.params;
@@ -62,4 +80,4 @@ class TarefaController {
   };
 }
 
-export default new TarefaController();
+export default new AnotacaoController();
